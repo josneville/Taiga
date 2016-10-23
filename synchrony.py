@@ -11,7 +11,7 @@ def get_next_purchase_item():
 	categories = resp['categories']
 	maxcat = 0
 	maxelem = {}
-	for i in range(categories):
+	for i in range(len(categories)):
 		if categories[i]['probability'] > maxcat:
 			maxcat = categories[i]['probability']
 			maxelem = categories[i]

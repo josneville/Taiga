@@ -9,28 +9,52 @@
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
 </head>
 
-<title>Embed Demo</title>
+<title>Taiga Demo</title>
 
 {{ css_resources|indent(4)|safe }}
 
 </head>
 
 <body ng-app="TaigaApp">
-  <div style="width: 100%; height: 100%" layout="row" layout-wrap>
-    <div flex="100">
-
+  <div ng-controller="MainCtrl" style="width: 100%; height: 100%" layout="column" layout-align="start center">
+    <form name="someForm" style="width: 100%; margin-top: 70px" layout="row" layout-align="center center" ng-submit="updatePage()" novalidate>
+      <md-input-container>
+        <label>Coupon Rate</label>
+        <input type="text" ng-model="options.coupon_rate" ui-percentage-mask required>
+      </md-input-container>
+      <md-input-container>
+        <label>Number of Years</label>
+        <input type="number" ng-model="options.num_years" required>
+      </md-input-container>
+      <md-input-container>
+        <label>Acceptance Rate</label>
+        <input type="text" ng-model="options.acceptance_rate" ui-percentage-mask required>
+      </md-input-container>
+      <md-input-container>
+        <label>Acceptance Period</label>
+        <input type="number" ng-model="options.acceptance_period" required>
+      </md-input-container>
+      <md-input-container>
+        <label>Coupon Baseline</label>
+        <input type="text" ng-model="options.baseline" ui-percentage-mask required>
+      </md-input-container>
+      <md-button type="submit" ng-disabled="someForm.$invalid" style="margin-top: -20px">Update</md-button>
+    </form>
+    <div style="width: 100%; padding: 50px; margin-top: 0px" layout="row" layout-align="space-around center">
+      <h1>Base Case: {a revenues.base | currency a}</h1>
+      <h1 layout="row" layout-align="center center">
+        Prediction Case: {a revenues.pred | currency a}
+        <md-icon md-svg-icon="arrow-up" ng-if="percent_change > 0" style="color: green; margin-left: 15px"></md-icon>
+        <md-icon md-svg-icon="arrow-down" ng-if="percent_change < 0" style="color: red"></md-icon>
+        {a percent_change | number:2 a}%
+      </h1>
     </div>
-    <div flex="50" layout="column" layout-align="center center" style="padding: 10px">
-      <h1>Total Revenue: {{base_cum_revenue}}</h1>
-      {{ base_plot_div|indent(4)|safe }}
-    </div>
-    <div flex="50" layout="column" layout-align="center center" style="padding: 10px">
-      <h1>Total Revenue: {{pred_cum_revenue}}</h1>
-      {{ pred_plot_div|indent(4)|safe }}
+    <div style="width: 80%;">
+      {{ plot_div|indent(4)|safe }}
     </div>
   </div>
 
-  {{ js_resources|indent(4)|safe }} {{ base_plot_script|indent(4)|safe }} {{ pred_plot_script|indent(4)|safe }}
+  {{ js_resources|indent(4)|safe }} {{ plot_script|indent(4)|safe }}
 
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
@@ -39,10 +63,28 @@
 
   <!-- Angular Material Library -->
   <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  <script src="/static/js/libraries/angular-input.min.js"></script>
 
   <!-- Your application bootstrap  -->
   <script type="text/javascript">
-    angular.module('TaigaApp', ['ngMaterial']);
+    angular.module('TaigaApp', ['ngMaterial', 'ui.utils.masks'])
+      .config(['$interpolateProvider', function($interpolateProvider) {
+        $interpolateProvider.startSymbol('{a');
+        $interpolateProvider.endSymbol('a}');
+      }])
+      .config(function($mdIconProvider) {
+        $mdIconProvider
+          .defaultIconSet('/static/fonts/mdi.svg')
+      })
+      .controller('MainCtrl', function($scope) {
+        $scope.options = {{options | safe}}
+        $scope.revenues = {{revenues | safe}}
+
+        $scope.percent_change = ((($scope.revenues.pred / $scope.revenues.base) - 1) * 100) / $scope.options.num_years
+        $scope.updatePage = function(){
+          window.location = "/?coupon_rate=" + $scope.options.coupon_rate + "&acceptance_period=" + $scope.options.acceptance_period + "&num_years=" + $scope.options.num_years + "&acceptance_rate=" + $scope.options.acceptance_rate + "&baseline=" + $scope.options.baseline
+        }
+      })
   </script>
 </body>
 
