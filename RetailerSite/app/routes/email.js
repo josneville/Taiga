@@ -165,41 +165,9 @@ module.exports = {
 				html += "              <tr>";
 				html += "                <td align=\"center\">";
 				html += "                <a href=\"http:\/\/www.htmlemailcheck.com\" title=\"Replace with your text\" target=\"_blank\">";
-				html += "                	<img src=\"https:\/\/www.htmlemailcheck.com\/assets\/img\/email\/email-sales-intro.jpg\" width=\"100%\" border=\"0\" alt=\"Replace with your text\" style=\"display: block; border:0; width:100%; height:auto !important;\" class=\"img-max\">";
+				html += "                	<img src=\"https:\/\/i.imgur.com\/negSNFS.png\" width=\"100%\" border=\"0\" alt=\"Replace with your text\" style=\"display: block; border:0; width:100%; height:auto !important;\" class=\"img-max\">";
 				html += "                <\/a>";
 				html += "              <\/td>";
-				html += "              <\/tr>";
-				html += "              <tr>";
-				html += "                <td><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
-				html += "                    <tr>";
-				html += "                      <td align=\"center\" height=\"25\" style=\"height:25px; font-size: 0;\">&nbsp;<\/td>";
-				html += "                    <\/tr>";
-				html += "                    <tr>";
-				html += "                      <td align=\"left\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 28px; color: #2C3E50;\">Special Offer!<\/td>";
-				html += "                    <\/tr>";
-				html += "                    <tr>";
-				html += "                      <td align=\"center\" height=\"25\" style=\"height:25px; font-size: 0;\">&nbsp;<\/td>";
-				html += "                    <\/tr>";
-				html += "                    <tr>";
-				html += "                      <td align=\"left\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 25px; color: #2C3E50;\"> Act now and this amazing offer could be yours!<br>";
-				html += "                      <\/td>";
-				html += "                    <\/tr>";
-				html += "                  <\/table><\/td>";
-				html += "              <\/tr>";
-				html += "              <tr>";
-				html += "                <td align=\"center\" height=\"25\" style=\"height:25px; font-size: 0;\">&nbsp;<\/td>";
-				html += "              <\/tr>";
-				html += "              <tr>";
-				html += "                <td align=\"center\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
-				html += "                    <tr>";
-				html += "                      <td align=\"center\">";
-				html += "                      <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"mobile-btn-container\">";
-				html += "                          <tr>";
-				html += "                            <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"#26d0ae\"><a href=\"http:\/\/www.htmlemailcheck.com\" title=\"Take me to the deals!\" target=\"_blank\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 15px 25px; border: 1px solid #26d0ae; display: inline-block;\" class=\"mobile-btn\">Take me to the deals!<\/a><\/td>";
-				html += "                          <\/tr>";
-				html += "                        <\/table><\/td>";
-				html += "                    <\/tr>";
-				html += "                  <\/table><\/td>";
 				html += "              <\/tr>";
 				html += "            <\/table><\/td>";
 				html += "        <\/tr>";
@@ -217,6 +185,7 @@ module.exports = {
 				html += "<\/table>";
 				html += "<\/body>";
 				html += "<\/html>";
+
 
 
 		     	// create reusable transporter object using the default SMTP transport 
