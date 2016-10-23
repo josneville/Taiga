@@ -34,9 +34,16 @@ def simulate():
         ])]
 
     fig = figure(title="Cumulative Revenue($)", x_axis_type="datetime", tools=TOOLS, plot_width=600, plot_height=300, sizing_mode="scale_width")
-    fig.line(base_case_simulation_x, base_case_simulation_y, color="#2ecc71", line_width=2, legend="Base Case")
-    fig.line(pred_case_simulation_x, pred_case_simulation_y, color="#9b59b6", line_width=2, legend="Prediction Case")
+    fig.line(base_case_simulation_x, base_case_simulation_y, color="#e67e22", line_width=4, legend="Base Case")
+    fig.line(pred_case_simulation_x, pred_case_simulation_y, color="#16a085", line_width=4, legend="Prediction Case")
     fig.yaxis[0].formatter.use_scientific = False
+    fig.title.text_color = "white"
+    fig.xaxis.major_label_text_color = "white"
+    fig.yaxis.major_label_text_color = "white"
+    fig.xaxis.axis_line_color = "white"
+    fig.yaxis.axis_line_color = "white"
+    fig.background_fill_color = None
+    fig.border_fill_color = None
 
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
