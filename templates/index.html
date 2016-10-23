@@ -8,64 +8,91 @@
   <!-- Angular Material style sheet -->
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-</head>
+  <link href="/static/css/angular-table.min.css" rel="stylesheet">
 
 <title>Taiga Demo</title>
 
+
+{% if simulation %}
 {{ css_resources|indent(4)|safe }}
+{% endif %}
 
 <style>
   * {
     font-family: 'Lato', sans-serif;
   }
 
-  h2, md-input-container *, .md-button * {
-      color: white;
+  h1,
+  h2,
+  md-input-container *,
+  .md-button *, md-table-container *{
+    color: white !important;
   }
 </style>
 
 </head>
 
 <body ng-app="TaigaApp" style="background-color: #34495e">
-  <div ng-controller="MainCtrl" style="width: 70%; height: 100%" layout="column" layout-align="start center">
-    <form name="someForm" style="width: 100%; margin-top: 50px; padding: 20px" layout="row" layout-align="space-around center" ng-submit="updatePage()" novalidate>
-      <md-input-container>
-        <label style="color: white">Coupon Rate</label>
-        <input type="text" style="color: white" ng-model="options.coupon_rate" ui-percentage-mask required>
-      </md-input-container>
-      <md-input-container>
-        <label style="color: white">Number of Years</label>
-        <input type="number" style="color: white" ng-model="options.num_years" required>
-      </md-input-container>
-      <md-input-container>
-        <label style="color: white">Acceptance Rate</label>
-        <input type="text" style="color: white" ng-model="options.acceptance_rate" ui-percentage-mask required>
-      </md-input-container>
-      <md-input-container>
-        <label style="color: white">Acceptance Period</label>
-        <input type="number" style="color: white" ng-model="options.acceptance_period" required>
-      </md-input-container>
-      <md-input-container>
-        <label style="color: white">Coupon Baseline</label>
-        <input type="text" style="color: white" ng-model="options.baseline" ui-percentage-mask required>
-      </md-input-container>
-      <md-button type="submit" ng-disabled="someForm.$invalid" style="margin-top: -20px">Update</md-button>
-    </form>
-    <div style="width: 100%; padding: 50px; margin-top: 0px" layout="row" layout-align="space-around center">
-      <h2>Base Case: {a revenues.base | currency a}</h2>
-      <h2 layout="row" layout-align="center center">
-        Prediction Case: {a revenues.pred | currency a}(
-        <md-icon md-svg-icon="arrow-up" ng-if="percent_change > 0" style="fill: #27ae60 !important;"></md-icon>
-        <md-icon md-svg-icon="arrow-down" ng-if="percent_change < 0" style="fill: #c0392b !important"></md-icon>
-        {a percent_change | number:2 a}%)
-      </h2>
+  <div ng-controller="MainCtrl" style="width: 100%; height: 100%" layout="column" layout-align="start center">
+    <div style="width: 100%;" layout="column" layout-align="start center">
+      <h2>Simulation Center</h2>
+      <form name="someForm" style="width: 100%; padding: 20px" layout="column" layout-align="space-around center" ng-submit="updatePage()" novalidate>
+        <div layout="row" layout-align="center center">
+          <md-input-container>
+            <label style="color: white">Max Coupon Rate</label>
+            <input type="text" style="color: white" ng-model="options.coupon_rate_max" ui-percentage-mask required>
+          </md-input-container>
+          <md-input-container>
+            <label style="color: white">Avg. Coupon Period (in days)</label>
+            <input type="number" style="color: white" ng-model="options.acceptance_period" required>
+          </md-input-container>
+          <md-input-container>
+            <label style="color: white">Frequency of Emails</label>
+            <input type="text" style="color: white" ng-model="options.email_frequency" required>
+          </md-input-container>
+        </div>
+        <md-button type="submit" class="md-raised md-primary" ng-disabled="someForm.$invalid" style="margin-top: -20px">Simulate</md-button>
+      </form>
     </div>
-    <div style="height: 80%; width: 80%;">
-      {{ plot_div|indent(4)|safe }}
+    {% if simulation %}
+    <div layout="row" style="width: 100%;">
+      <div flex="60">
+        {{ plot_div|indent(4)|safe }}
+      </div>
+      <div layout="column" flex="50">
+        <md-table-container>
+          <table md-table>
+            <thead md-head>
+              <tr md-row>
+                <th md-column><span>Acceptance Rate</span></th>
+                <th md-column><span>Optimal Coupon Rate</span></th>
+                <th md-column><span>Total Revenue</span></th>
+                <th md-column><span>% Revenue Change (Annualized)</span></th>
+              </tr>
+            </thead>
+            <tbody md-body>
+              <tr md-row ng-repeat="(key, value) in revenue_by_acceptance_rate | toArray | orderBy:'$key'">
+                <td md-cell>{a value.$key a}%</td>
+                <td md-cell>{a value['coupon_rate'] * 100 | number: 2 a}%</td>
+                <td md-cell>{a value['revenue'] | currency a}</td>
+                <td md-cell>
+                  <md-icon md-svg-icon="arrow-up" style="fill: green"></md-icon>
+                  {a ((value['revenue'] / {{base_case_cum_rev}}) - 1) * 100 / 5 | number:2 a}%
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </md-table-container>
+      </div>
     </div>
+    {% endif %}
   </div>
 
+  {% if simulation %}
+
   {{ js_resources|indent(4)|safe }} {{ plot_script|indent(4)|safe }}
+
+  {% endif %}
 
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
@@ -75,10 +102,13 @@
   <!-- Angular Material Library -->
   <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
   <script src="/static/js/libraries/angular-input.min.js"></script>
+  <script src="/static/js/libraries/angular-table.min.js"></script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore.js"></script>
 
   <!-- Your application bootstrap  -->
   <script type="text/javascript">
-    angular.module('TaigaApp', ['ngMaterial', 'ui.utils.masks'])
+    angular.module('TaigaApp', ['ngMaterial', 'ui.utils.masks', 'md.data.table'])
       .config(['$interpolateProvider', function($interpolateProvider) {
         $interpolateProvider.startSymbol('{a');
         $interpolateProvider.endSymbol('a}');
@@ -89,13 +119,21 @@
       })
       .controller('MainCtrl', function($scope) {
         $scope.options = {{options | safe}}
-        $scope.revenues = {{revenues | safe}}
+        $scope.revenue_by_acceptance_rate = {{revenue_by_acceptance_rate | safe}}
 
-        $scope.percent_change = ((($scope.revenues.pred / $scope.revenues.base) - 1) * 100)
-        $scope.updatePage = function(){
-          window.location = "/?coupon_rate=" + $scope.options.coupon_rate + "&acceptance_period=" + $scope.options.acceptance_period + "&num_years=" + $scope.options.num_years + "&acceptance_rate=" + $scope.options.acceptance_rate + "&baseline=" + $scope.options.baseline
+        $scope.options.email_frequency = $scope.options.baseline == 0.9 ? 1 : ($scope.options.baseline == 0.8 ? 2 : 3)
+
+        $scope.updatePage = function() {
+          $scope.options.baseline = $scope.options.email_frequency == 1 ? 0.9 : ($scope.options.email_frequency == 2 ? 0.8 : 0.7)
+          window.location = "/simulate?coupon_rate_max=" + $scope.options.coupon_rate_max + "&acceptance_period=" + $scope.options.acceptance_period + "&baseline=" + $scope.options.baseline
         }
       })
+      .filter('toArray', function() { return function(obj) {
+        if (!(obj instanceof Object)) return obj;
+        return _.map(obj, function(val, key) {
+            return Object.defineProperty(val, '$key', {__proto__: null, value: key});
+        })
+      }})
   </script>
 </body>
 

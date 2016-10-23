@@ -32,9 +32,9 @@ def pred_case(options):
     while len(dates) == 0 or dates[-1] < end_date:
         synchrony_prediction = categories[str(random.randrange(100000, 105000))]
 
-        random_category = synchrony_prediction['probability'] < options['baseline'] * 100
+        random_category = (synchrony_prediction['probability'] < options['baseline'] * 100) or options['coupon_rate'] == 0
 
-        category = synchrony_prediction['categoryName'] if random_category else random.choice(list(products.keys()))
+        category = random.choice(list(products.keys())) if random_category else synchrony_prediction['categoryName']
         accepted = False if random_category else random.uniform(0, 1) < options['acceptance_rate']
 
         cum_revenue.append((0 if len(cum_revenue) == 0 else cum_revenue[-1]) + (products[category] * (1 - (options['coupon_rate'] if accepted else 0))))
