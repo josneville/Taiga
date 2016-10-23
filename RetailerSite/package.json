@@ -1,0 +1,19 @@
+{
+  "name": "taiga",
+  "version": "1.0.0",
+  "description": "Retail site for Taiga",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rishant",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "express-validator": "^2.20.10",
+    "morgan": "^1.7.0",
+    "nodemailer": "^2.6.4",
+    "superagent": "^2.3.0"
+  }
+}
